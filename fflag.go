@@ -45,20 +45,20 @@ type Options struct {
 	// If a specific file is given using FlagName, the file must exist.
 	Path string
 
-	// FlagName is the name of the flag that points to a config file.
+	// ConfigFlagName is the name of the flag that points to a config file.
 	//
 	// If this flag is invoked a non-existing file will return an error.
-	FlagName string
+	ConfigFlagName string
 }
 
 // NewDefaultOptions returns default options for use in Parse.
 //
-//   Path:     "config.txt"
-//   FlagName: "config"
+//   Path:           "config.txt"
+//   ConfigFlagName: "config"
 func NewDefaultOptions() *Options {
 	return &Options{
-		Path:     "config.txt",
-		FlagName: "config",
+		Path:           "config.txt",
+		ConfigFlagName: "config",
 	}
 }
 
@@ -98,8 +98,8 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 	if o == nil {
 		o = NewDefaultOptions()
 	}
-	fs.String(o.FlagName, o.Path, "path to config file")
-	configPath := getFlagConfigPath(o.FlagName)
+	fs.String(o.ConfigFlagName, o.Path, "path to config file")
+	configPath := getFlagConfigPath(o.ConfigFlagName)
 	fileMustExist := false
 	if configPath != "" {
 		// a specific config was requested using config flag. insist on the file existing.
@@ -170,7 +170,7 @@ func (p *parser) scanTextFlags() error {
 		if !p.fileMustExist && errors.Is(err, os.ErrNotExist) {
 			return nil
 		}
-		return fmt.Errorf("fflag: error reading -%s=%q: %w", p.FlagName, p.Path, err)
+		return fmt.Errorf("fflag: error reading -%s=%q: %w", p.ConfigFlagName, p.Path, err)
 	}
 	defer f.Close()
 	sc := bufio.NewScanner(f)
