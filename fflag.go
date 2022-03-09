@@ -49,6 +49,10 @@ type Options struct {
 	//
 	// If this flag is invoked a non-existing file will return an error.
 	ConfigFlagName string
+
+	// WriteConfigFlagName is the name of the flag that causes the current
+	// configuration to be printed.
+	WriteConfigFlagName string
 }
 
 // NewDefaultOptions returns default options for use in Parse.
@@ -57,8 +61,9 @@ type Options struct {
 //   ConfigFlagName: "config"
 func NewDefaultOptions() *Options {
 	return &Options{
-		Path:           "config.txt",
-		ConfigFlagName: "config",
+		Path:                "config.txt",
+		ConfigFlagName:      "config",
+		WriteConfigFlagName: "write-config",
 	}
 }
 
@@ -112,7 +117,15 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 		Options:       o,
 		textFlags:     map[string]string{},
 	}
-	return p.parse()
+	err := p.parse()
+	if err != nil {
+		return err
+	}
+
+	if o.WriteConfigFlagName != "" && fs.Lookup(o.WriteConfigFlagName).Value.String() == "true" {
+		WriteFlagSetConfig(os.Stdout, fs, o.ConfigFlagName, o.WriteConfigFlagName)
+	}
+	return nil
 }
 
 func getFlagConfigPath(configFlagName string) string {
