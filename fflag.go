@@ -57,8 +57,9 @@ type Options struct {
 
 // NewDefaultOptions returns default options for use in Parse.
 //
-//   Path:           "config.txt"
-//   ConfigFlagName: "config"
+//   Path:                "config.txt"
+//   ConfigFlagName:      "config"
+//   WriteConfigFlagName: "write-config"
 func NewDefaultOptions() *Options {
 	return &Options{
 		Path:                "config.txt",
