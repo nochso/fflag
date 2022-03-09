@@ -106,8 +106,9 @@ func NewDefaultOptions() *Options
 NewDefaultOptions returns default options for use in Parse\.
 
 ```
-Path:           "config.txt"
-ConfigFlagName: "config"
+Path:                "config.txt"
+ConfigFlagName:      "config"
+WriteConfigFlagName: "write-config"
 ```
 
 
