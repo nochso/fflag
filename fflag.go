@@ -81,7 +81,7 @@ where flag-name is an argument name without the "-" prefix.
 
 Comments begin with any of these: # ' ; //
 
-Leading and trailing whitespace is ignored on each line, key and value.`))
+Leading and trailing whitespace is ignored on each line, key and value.`, 1))
 	fmt.Fprint(w, "\n\n")
 	fs.VisitAll(func(f *flag.Flag) {
 		if _, ignore := flags[f.Name]; ignore {
@@ -95,11 +95,8 @@ Leading and trailing whitespace is ignored on each line, key and value.`))
 	})
 }
 
-func multilineComment(s string, indent ...int) string {
-	ind := " "
-	if len(indent) > 0 {
-		ind = strings.Repeat(" ", indent[0])
-	}
+func multilineComment(s string, indent int) string {
+	ind := strings.Repeat(" ", indent)
 	return "#" + ind + strings.ReplaceAll(s, "\n", "\n#"+ind)
 }
 
