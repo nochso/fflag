@@ -87,7 +87,7 @@ Leading and trailing whitespace is ignored on each line, key and value.`))
 		if _, ignore := flags[f.Name]; ignore {
 			return
 		}
-		fmt.Fprintf(w, "# %s\n%s\n#\n# default:\n# %s %s\n", f.Name, multilineComment(f.Usage, len(f.Name)+1), f.Name, f.DefValue)
+		fmt.Fprintf(w, "# %s\n%s\n#\n# default:\n# %s %s\n", f.Name, multilineComment(f.Usage, 3), f.Name, f.DefValue)
 		if f.DefValue != f.Value.String() {
 			fmt.Fprintf(w, "%s %s\n", f.Name, f.Value)
 		}
