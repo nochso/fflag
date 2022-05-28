@@ -87,7 +87,7 @@ Leading and trailing whitespace is ignored on each line, key and value.`))
 		if _, ignore := flags[f.Name]; ignore {
 			return
 		}
-		fmt.Fprintf(w, "%s\n//\n// default:\n// %s %s\n", multilineComment(f.Name+": "+f.Usage), f.Name, f.DefValue)
+		fmt.Fprintf(w, "%s\n#\n# default:\n# %s %s\n", f.Name+multilineComment(f.Usage, len(f.Name)+1), f.Name, f.DefValue)
 		if f.DefValue != f.Value.String() {
 			fmt.Fprintf(w, "%s %s\n", f.Name, f.Value)
 		}
@@ -95,8 +95,12 @@ Leading and trailing whitespace is ignored on each line, key and value.`))
 	})
 }
 
-func multilineComment(s string) string {
-	return "// " + strings.ReplaceAll(s, "\n", "\n// ")
+func multilineComment(s string, indent ...int) string {
+	ind := " "
+	if len(indent) > 0 {
+		ind = strings.Repeat(" ", indent[0])
+	}
+	return "#" + ind + strings.ReplaceAll(s, "\n", "\n#"+ind)
 }
 
 var ErrWriteConfig = errors.New("wrote configuration to stdout")
