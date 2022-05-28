@@ -115,6 +115,11 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 		fileMustExist = true
 		o.Path = configPath
 	}
+	if getFlagWriteConfig(o.WriteConfigFlagName) {
+		WriteFlagSetConfig(os.Stdout, fs, o.ConfigFlagName, o.WriteConfigFlagName)
+		return nil
+	}
+
 	p := &parser{
 		fileMustExist: fileMustExist,
 		fs:            fs,
@@ -140,6 +145,16 @@ func getFlagConfigPath(configFlagName string) string {
 	f.StringVar(&configPath, configFlagName, "", "path to config file")
 	f.Parse(os.Args[1:])
 	return configPath
+}
+
+func getFlagWriteConfig(writeConfigFlagName string) bool {
+	f := flag.NewFlagSet(writeConfigFlagName, flag.ContinueOnError)
+	// don't care about -h here and errors are handled by p.visitFlag
+	f.SetOutput(io.Discard)
+	var writeConfig bool
+	f.BoolVar(&writeConfig, writeConfigFlagName, false, "write configuration to stdout")
+	f.Parse(os.Args[1:])
+	return writeConfig
 }
 
 type parser struct {
