@@ -99,6 +99,8 @@ func multilineComment(s string) string {
 	return "// " + strings.ReplaceAll(s, "\n", "\n// ")
 }
 
+var ErrWriteConfig = errors.New("wrote configuration to stdout")
+
 // Parse a config file into an existing FlagSet.
 func Parse(fs *flag.FlagSet, o *Options) error {
 	if o == nil {
@@ -117,7 +119,7 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 	}
 	if getFlagWriteConfig(o.WriteConfigFlagName) {
 		WriteFlagSetConfig(os.Stdout, fs, o.ConfigFlagName, o.WriteConfigFlagName)
-		return nil
+		return ErrWriteConfig
 	}
 
 	p := &parser{
@@ -126,15 +128,7 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 		Options:       o,
 		textFlags:     map[string]string{},
 	}
-	err := p.parse()
-	if err != nil {
-		return err
-	}
-
-	if o.WriteConfigFlagName != "" && fs.Lookup(o.WriteConfigFlagName).Value.String() == "true" {
-		WriteFlagSetConfig(os.Stdout, fs, o.ConfigFlagName, o.WriteConfigFlagName)
-	}
-	return nil
+	return p.parse()
 }
 
 func getFlagConfigPath(configFlagName string) string {
