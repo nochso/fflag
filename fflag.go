@@ -105,6 +105,9 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 		o = NewDefaultOptions()
 	}
 	fs.String(o.ConfigFlagName, o.Path, "path to config file")
+	if o.WriteConfigFlagName != "" {
+		fs.Bool(o.WriteConfigFlagName, false, "write configuration to stdout and exit")
+	}
 	configPath := getFlagConfigPath(o.ConfigFlagName)
 	fileMustExist := false
 	if configPath != "" {
