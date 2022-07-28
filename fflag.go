@@ -21,24 +21,8 @@ import (
 	"strings"
 )
 
-// LogFunc provides a Logger implementation for a Printf style function.
-type LogFunc func(string, ...interface{})
-
-// Printf implements the Logger interface for a Printf style function.
-func (lf LogFunc) Printf(format string, a ...interface{}) {
-	lf(format, a...)
-}
-
-// Logger is used to log warnings while parsing a config file.
-type Logger interface {
-	Printf(string, ...interface{})
-}
-
 // Options used for parsing a config file.
 type Options struct {
-	// Logger logs warnings (unknown keys/names found in file)
-	Logger Logger
-
 	// Path is the default config file path.
 	//
 	// If this file does exist, no error is returned.
@@ -109,6 +93,8 @@ func multilineComment(s string, indent int) string {
 var ErrWriteConfig = errors.New("wrote configuration to stdout")
 
 // Parse a config file into an existing FlagSet.
+//
+// Returns ErrWriteConfig if the configuration was written to stdout as requested.
 func Parse(fs *flag.FlagSet, o *Options) error {
 	if o == nil {
 		o = NewDefaultOptions()
@@ -168,13 +154,6 @@ type parser struct {
 	errors        errs
 }
 
-func (p *parser) logf(format string, a ...interface{}) {
-	if p.Logger == nil {
-		return
-	}
-	p.Logger.Printf(format, a...)
-}
-
 func (p *parser) parse() error {
 	if err := p.scanTextFlags(); err != nil {
 		return err
@@ -208,21 +187,25 @@ func (p *parser) scanTextFlags() error {
 	defer f.Close()
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
-		p.scanLine(sc)
+		err = p.scanLine(sc)
+		if err != nil {
+			p.errors = append(p.errors, err)
+		}
 	}
 	return sc.Err()
 }
 
-func (p *parser) scanLine(sc *bufio.Scanner) {
+func (p *parser) scanLine(sc *bufio.Scanner) error {
 	p.lineNo++
 	k, v := parseLine(sc.Text())
 	if k == "" {
-		return
+		return nil
 	}
 	p.textFlags[k] = v
 	if fl := p.fs.Lookup(k); fl == nil {
-		p.logf("warning: config file %q line %d contains unknown flag name %q", p.Path, p.lineNo, k)
+		return fmt.Errorf("fflag: config file %q line %d contains unknown flag name %q", p.Path, p.lineNo, k)
 	}
+	return nil
 }
 
 func parseLine(line string) (k, v string) {

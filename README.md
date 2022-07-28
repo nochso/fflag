@@ -22,14 +22,18 @@ Leading and trailing whitespace is ignored on each line\, key and value\.
 
 ## Index
 
+- [Variables](<#variables>)
 - [func Parse(fs *flag.FlagSet, o *Options) error](<#func-parse>)
 - [func WriteFlagSetConfig(w io.Writer, fs *flag.FlagSet, ignoreFlags ...string)](<#func-writeflagsetconfig>)
-- [type LogFunc](<#type-logfunc>)
-  - [func (lf LogFunc) Printf(format string, a ...interface{})](<#func-logfunc-printf>)
-- [type Logger](<#type-logger>)
 - [type Options](<#type-options>)
   - [func NewDefaultOptions() *Options](<#func-newdefaultoptions>)
 
+
+## Variables
+
+```go
+var ErrWriteConfig = errors.New("wrote configuration to stdout")
+```
 
 ## func Parse
 
@@ -39,36 +43,12 @@ func Parse(fs *flag.FlagSet, o *Options) error
 
 Parse a config file into an existing FlagSet\.
 
+Returns ErrWriteConfig if the configuration was written to stdout as requested\.
+
 ## func WriteFlagSetConfig
 
 ```go
 func WriteFlagSetConfig(w io.Writer, fs *flag.FlagSet, ignoreFlags ...string)
-```
-
-## type LogFunc
-
-LogFunc provides a Logger implementation for a Printf style function\.
-
-```go
-type LogFunc func(string, ...interface{})
-```
-
-### func \(LogFunc\) Printf
-
-```go
-func (lf LogFunc) Printf(format string, a ...interface{})
-```
-
-Printf implements the Logger interface for a Printf style function\.
-
-## type Logger
-
-Logger is used to log warnings while parsing a config file\.
-
-```go
-type Logger interface {
-    Printf(string, ...interface{})
-}
 ```
 
 ## type Options
@@ -77,9 +57,6 @@ Options used for parsing a config file\.
 
 ```go
 type Options struct {
-    // Logger logs warnings (unknown keys/names found in file)
-    Logger Logger
-
     // Path is the default config file path.
     //
     // If this file does exist, no error is returned.
