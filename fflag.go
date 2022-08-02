@@ -110,18 +110,25 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 		fileMustExist = true
 		o.Path = configPath
 	}
-	if getFlagWriteConfig(o.WriteConfigFlagName) {
-		WriteFlagSetConfig(os.Stdout, fs, o.ConfigFlagName, o.WriteConfigFlagName)
-		return ErrWriteConfig
-	}
-
 	p := &parser{
 		fileMustExist: fileMustExist,
 		fs:            fs,
 		Options:       o,
 		textFlags:     map[string]string{},
 	}
-	return p.parse()
+	err := p.parse()
+	if err != nil {
+		return err
+	}
+	err = fs.Parse(os.Args[1:])
+	if err != nil && !errors.Is(err, ErrWriteConfig) {
+		return err
+	}
+	if getFlagWriteConfig(o.WriteConfigFlagName) {
+		WriteFlagSetConfig(os.Stdout, fs, o.ConfigFlagName, o.WriteConfigFlagName)
+		return ErrWriteConfig
+	}
+	return nil
 }
 
 func getFlagConfigPath(configFlagName string) string {
