@@ -41,7 +41,7 @@ var ErrWriteConfig = errors.New("wrote configuration to stdout")
 func Parse(fs *flag.FlagSet, o *Options) error
 ```
 
-Parse a config file into an existing FlagSet\.
+Parse a config file into an existing FlagSet before parsing the FlagSet itself\.
 
 Returns ErrWriteConfig if the configuration was written to stdout as requested\.
 
