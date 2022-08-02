@@ -15,6 +15,9 @@ Security   in case of vulnerabilities
 
 ## [Unreleased]
 
+### Changed
+- `fflag.Parse` also parses the given flagset.
+
 ## [0.4.0] - 2022-07-31
 ### Added
 - This changelog.
