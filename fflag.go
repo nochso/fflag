@@ -1,10 +1,10 @@
-// Package fflag parses flag.FlagSet from simple configuration files.
+// Package fflag parses [flag.FlagSet] from simple configuration files.
 //
-// Syntax
+// # Syntax
 //
-// Keys (flag names without the ``-'' prefix) followed by values.
+// Keys (flag names without the "-" prefix) followed by values.
 //
-//   flag-name flag-value
+//	flag-name flag-value
 //
 // Comments begin with any of these: # ; //
 //
@@ -39,11 +39,11 @@ type Options struct {
 	WriteConfigFlagName string
 }
 
-// NewDefaultOptions returns default options for use in Parse.
+// NewDefaultOptions returns default options for use in [Parse].
 //
-//   Path:                "config.txt"
-//   ConfigFlagName:      "config"
-//   WriteConfigFlagName: "write-config"
+//	Path:                "config.txt"
+//	ConfigFlagName:      "config"
+//	WriteConfigFlagName: "write-config"
 func NewDefaultOptions() *Options {
 	return &Options{
 		Path:                "config.txt",
@@ -52,6 +52,8 @@ func NewDefaultOptions() *Options {
 	}
 }
 
+// WriteFlagSetConfig writes a configuration file to w including both default
+// and currently set values (should they differ).
 func WriteFlagSetConfig(w io.Writer, fs *flag.FlagSet, ignoreFlags ...string) {
 	flags := make(map[string]struct{}, len(ignoreFlags))
 	for i := range ignoreFlags {
@@ -90,11 +92,13 @@ func multilineComment(s string, indent int) string {
 	return "#" + ind + strings.ReplaceAll(s, "\n", "\n#"+ind)
 }
 
+// ErrWriteConfig is returned by [Parse] after the current configuration has been
+// to written to [os.Stdout].
 var ErrWriteConfig = errors.New("wrote configuration to stdout")
 
-// Parse a config file into an existing FlagSet before parsing the FlagSet itself.
+// Parse a config file into an existing [flag.FlagSet] before parsing the FlagSet itself.
 //
-// Returns ErrWriteConfig if the configuration was written to stdout as requested.
+// Returns [ErrWriteConfig] if the configuration was written to stdout as requested.
 func Parse(fs *flag.FlagSet, o *Options) error {
 	if o == nil {
 		o = NewDefaultOptions()
