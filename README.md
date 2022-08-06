@@ -6,11 +6,11 @@
 import "github.com/nochso/fflag"
 ```
 
-Package fflag parses flag\.FlagSet from simple configuration files\.
+Package fflag parses \[flag.FlagSet\] from simple configuration files.
 
-### Syntax
+## Syntax
 
-Keys \(flag names without the \`\`\-'' prefix\) followed by values\.
+Keys \(flag names without the "\-" prefix\) followed by values.
 
 ```
 flag-name flag-value
@@ -18,18 +18,21 @@ flag-name flag-value
 
 Comments begin with any of these: \# ; //
 
-Leading and trailing whitespace is ignored on each line\, key and value\.
+Leading and trailing whitespace is ignored on each line, key and value.
 
 ## Index
 
 - [Variables](<#variables>)
 - [func Parse(fs *flag.FlagSet, o *Options) error](<#func-parse>)
+- [func ParseArgs(fs *flag.FlagSet, o *Options, args []string) error](<#func-parseargs>)
 - [func WriteFlagSetConfig(w io.Writer, fs *flag.FlagSet, ignoreFlags ...string)](<#func-writeflagsetconfig>)
 - [type Options](<#type-options>)
   - [func NewDefaultOptions() *Options](<#func-newdefaultoptions>)
 
 
 ## Variables
+
+ErrWriteConfig is returned by \[Parse\] after the current configuration has been to written to \[os.Stdout\].
 
 ```go
 var ErrWriteConfig = errors.New("wrote configuration to stdout")
@@ -41,9 +44,19 @@ var ErrWriteConfig = errors.New("wrote configuration to stdout")
 func Parse(fs *flag.FlagSet, o *Options) error
 ```
 
-Parse a config file into an existing FlagSet before parsing the FlagSet itself\.
+Parse a config file using \[os.Args\] into an existing \[flag.FlagSet\] before parsing the FlagSet itself.
 
-Returns ErrWriteConfig if the configuration was written to stdout as requested\.
+Returns \[ErrWriteConfig\] if the configuration was written to stdout as requested.
+
+## func ParseArgs
+
+```go
+func ParseArgs(fs *flag.FlagSet, o *Options, args []string) error
+```
+
+ParseArgs parses a config file using given arguments into an existing \[flag.FlagSet\] before parsing the FlagSet itself.
+
+Returns \[ErrWriteConfig\] if the configuration was written to stdout as requested.
 
 ## func WriteFlagSetConfig
 
@@ -51,9 +64,11 @@ Returns ErrWriteConfig if the configuration was written to stdout as requested\.
 func WriteFlagSetConfig(w io.Writer, fs *flag.FlagSet, ignoreFlags ...string)
 ```
 
+WriteFlagSetConfig writes a configuration file to w including both default and currently set values \(should they differ\).
+
 ## type Options
 
-Options used for parsing a config file\.
+Options used for parsing a config file.
 
 ```go
 type Options struct {
@@ -80,7 +95,7 @@ type Options struct {
 func NewDefaultOptions() *Options
 ```
 
-NewDefaultOptions returns default options for use in Parse\.
+NewDefaultOptions returns default options for use in \[Parse\].
 
 ```
 Path:                "config.txt"
