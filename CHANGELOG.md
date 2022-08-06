@@ -14,9 +14,12 @@ Security   in case of vulnerabilities
 -->
 
 ## [Unreleased]
+### Added
+- Function `ParseArgs` allows you to pass arguments. `Parse` continues to use `os.Args[1:]`.
 
 ### Changed
 - `fflag.Parse` also parses the given flagset.
+- Slightly improved docs, using new godoc features.
 
 ## [0.4.0] - 2022-07-31
 ### Added
