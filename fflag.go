@@ -96,10 +96,17 @@ func multilineComment(s string, indent int) string {
 // to written to [os.Stdout].
 var ErrWriteConfig = errors.New("wrote configuration to stdout")
 
-// Parse a config file into an existing [flag.FlagSet] before parsing the FlagSet itself.
+// Parse a config file using [os.Args] into an existing [flag.FlagSet] before parsing the FlagSet itself.
 //
 // Returns [ErrWriteConfig] if the configuration was written to stdout as requested.
 func Parse(fs *flag.FlagSet, o *Options) error {
+	return ParseArgs(fs, o, os.Args[1:])
+}
+
+// ParseArgs parses a config file using given arguments into an existing [flag.FlagSet] before parsing the FlagSet itself.
+//
+// Returns [ErrWriteConfig] if the configuration was written to stdout as requested.
+func ParseArgs(fs *flag.FlagSet, o *Options, args []string) error {
 	if o == nil {
 		o = NewDefaultOptions()
 	}
@@ -124,7 +131,7 @@ func Parse(fs *flag.FlagSet, o *Options) error {
 	if err != nil {
 		return err
 	}
-	err = fs.Parse(os.Args[1:])
+	err = fs.Parse(args)
 	if err != nil && !errors.Is(err, ErrWriteConfig) {
 		return err
 	}
