@@ -14,6 +14,8 @@ Security   in case of vulnerabilities
 -->
 
 ## [Unreleased]
+
+## [0.5.0] - 2022-08-06
 ### Added
 - Function `ParseArgs` allows you to pass arguments. `Parse` continues to use `os.Args[1:]`.
 
@@ -29,5 +31,6 @@ Security   in case of vulnerabilities
 - Removed logging functionality. An error is returned instead.
 
 
-[Unreleased]: https://github.com/nochso/fflag/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/nochso/fflag/compare/v5.0.0...HEAD
+[0.5.0]: https://github.com/nochso/fflag/compare/v0.5.0...v0.4.0
 [0.4.0]: https://github.com/nochso/fflag/compare/v0.4.0...v0.3.1
