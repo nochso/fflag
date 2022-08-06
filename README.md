@@ -2,6 +2,10 @@
 
 # fflag
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/nochso/fflag.svg)](https://pkg.go.dev/github.com/nochso/fflag)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/nochso/fflag?sort=semver)
+![GitHub](https://img.shields.io/github/license/nochso/fflag)
+
 ```go
 import "github.com/nochso/fflag"
 ```
